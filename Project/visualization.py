@@ -9,12 +9,13 @@ class Space3D:
     def __init__(self):
         self.fig = plt.figure()
         self.ax = plt.axes(projection="3d")
-        self.infiwhile()
-        planes = animation.FuncAnimation(self.fig, self.update_data)
+        # self.infiwhile()
+        planes = animation.FuncAnimation(self.fig, self.update_data, frames=100)
 
         plt.show()
 
-    def update_data(self):
+    def update_data(self, frame) -> None:
+        self.ax.clear()
         self.create_lines()
         self.settings()
 
@@ -39,7 +40,6 @@ class Space3D:
     def infiwhile(self):
         while True:
             plt.show()
-
 
 
 if __name__ == '__main__':

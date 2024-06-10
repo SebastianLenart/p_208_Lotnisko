@@ -24,7 +24,7 @@ class Server:
         self.db.create_table()
         self.db.remove_data_from_plane()
         self.active_planes = 0
-        # airport = Space3D()
+        # airport = Space3D() # nie dziala bo blokuje program
         self.Deeamon_animation = threading.Thread(target=self.add_point_animation, daemon=True)
         self.Deeamon_animation.start()
 
