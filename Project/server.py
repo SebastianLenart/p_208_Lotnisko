@@ -60,6 +60,10 @@ class Server:
 
             self.add_or_change_data_plane(answer_to_send)
             x = self.db.get_points(answer_to_send["number_flight"])
+            # szukaj kolizji:
+            #
+            #
+
 
             try:
                 answer_to_send2 = json.dumps(answer_to_send).encode(encoding='utf8')

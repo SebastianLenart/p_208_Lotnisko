@@ -163,10 +163,17 @@ class Database:
 
 if __name__ == '__main__':
     db = Database()
-    threads = []
-    for _ in range(5):
-        t = Thread(target=db.create_table)
-        threads.append(t)
-        t.start()
-    for t in threads:
-        t.join()
+    if db.get_points(3):
+        print("3")
+    if db.get_points(0):
+        print("0")
+    print(db.get_points(3))
+
+
+    # threads = []
+    # for _ in range(5):
+    #     t = Thread(target=db.create_table)
+    #     threads.append(t)
+    #     t.start()
+    # for t in threads:
+    #     t.join()
