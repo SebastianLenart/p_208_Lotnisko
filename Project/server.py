@@ -62,7 +62,7 @@ class Server:
             x = self.db.get_points(answer_to_send["number_flight"])
             # szukaj kolizji:
             #
-            #
+            # jak to zrobie to w zasadzie tyle, tylko statystyke dodac i testy i visualizacje
 
 
             try:
