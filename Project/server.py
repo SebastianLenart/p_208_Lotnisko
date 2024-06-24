@@ -25,8 +25,8 @@ class Server:
         self.db.remove_data_from_plane()
         self.active_planes = 0
         # airport = Space3D() # nie dziala bo blokuje program
-        self.Deeamon_animation = threading.Thread(target=self.add_point_animation, daemon=True)
-        self.Deeamon_animation.start()
+        # self.Deeamon_animation = threading.Thread(target=self.add_point_animation, daemon=True)
+        # self.Deeamon_animation.start()
 
     def read_write(self, connection):  # ta funkcja jest oddzielna dla kazdego samolotu, wykonuje sie wielowatkowo
         self.active_planes += 1

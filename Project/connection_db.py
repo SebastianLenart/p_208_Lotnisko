@@ -20,6 +20,8 @@ from plane
 where number_flight = (%s)
 order by plane_id 
 limit 1"""
+SELECT_POINTS = """select pos_x, pos_y, pos_z from plane
+order by plane_id limit 1"""
 
 
 class Database:

@@ -3,20 +3,25 @@ import matplotlib.pyplot as plt
 import matplotlib
 from mpl_toolkits import mplot3d
 import matplotlib.animation as animation
+from connection_db import Database
+import threading
 
 
 class Space3D:
     def __init__(self):
         self.fig = plt.figure()
         self.ax = plt.axes(projection="3d")
-        planes = animation.FuncAnimation(self.fig, self.update_data, frames=100)
-
-        plt.show()
+        self.planes = animation.FuncAnimation(self.fig, self.update_data, frames=100, interval=1000)
+        # self.db = Database()
+        self.create_lines()
+        self.settings()
+        # plt.show()
 
     def update_data(self, frame) -> None:
         self.ax.cla()
         self.create_lines()
         self.settings()
+        self.add_points(10, 10, 10)
 
     def settings(self):
         self.ax.set_xlim(0, 10000)
@@ -34,8 +39,11 @@ class Space3D:
     def add_points(self, x, y, z):
         print("XYZ", x, y, z)
         self.ax.scatter(int(x), int(y), int(z))
-        plt.show()
+        # plt.show()
 
 
 if __name__ == '__main__':
     fig = Space3D()
+    plt.show()
+
+
