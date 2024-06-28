@@ -29,7 +29,8 @@ class Space3D:
         self.ax.set_zlim(0, 10000)
         self.ax.set_xlabel("X")
         self.ax.set_ylabel("Y")
-        self.ax.set_zlabel("Z")
+        self.ax.set
+        _zlabel("Z")
         self.ax.set_title("Airport")
 
     def create_lines(self):
