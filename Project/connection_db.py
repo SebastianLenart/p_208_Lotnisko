@@ -20,8 +20,8 @@ from plane
 where number_flight = (%s)
 order by plane_id 
 limit 1"""
-SELECT_POINTS = """select pos_x, pos_y, pos_z from plane
-order by plane_id limit 1"""
+SELECT_POINTS = """select pos_x, pos_y, pos_z, number_flight from plane
+order by number_flight"""
 
 
 class Database:
@@ -160,6 +160,11 @@ class Database:
     def get_points(self, number_flight):
         with self.get_cursor() as cursor:
             cursor.execute(SELECT_POINTS_BY_NUMBER_FLIGHT, (number_flight,))
+            return cursor.fetchall()
+
+    def get_points_to_visu(self):
+        with self.get_cursor() as cursor:
+            cursor.execute(SELECT_POINTS)
             return cursor.fetchall()
 
 

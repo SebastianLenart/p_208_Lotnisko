@@ -12,7 +12,7 @@ class Space3D:
         self.fig = plt.figure()
         self.ax = plt.axes(projection="3d")
         self.planes = animation.FuncAnimation(self.fig, self.update_data, frames=100, interval=1000)
-        # self.db = Database()
+        self.db = Database()
         self.create_lines()
         self.settings()
         # plt.show()
@@ -21,7 +21,7 @@ class Space3D:
         self.ax.cla()
         self.create_lines()
         self.settings()
-        self.add_points(10, 10, 10)
+        self.add_points()
 
     def settings(self):
         self.ax.set_xlim(0, 10000)
@@ -36,9 +36,9 @@ class Space3D:
         self.ax.plot([6000, 8000], [4000, 4000], [0])
         self.ax.plot([6000, 8000], [6000, 6000], [0])
 
-    def add_points(self, x, y, z):
-        print("XYZ", x, y, z)
-        self.ax.scatter(int(x), int(y), int(z))
+    def add_points(self):
+        self.db.get_points_to_visu()
+        # self.ax.scatter(int(x), int(y), int(z))
         # plt.show()
 
 
