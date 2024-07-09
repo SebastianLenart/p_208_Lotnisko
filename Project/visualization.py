@@ -29,8 +29,7 @@ class Space3D:
         self.ax.set_zlim(0, 10000)
         self.ax.set_xlabel("X")
         self.ax.set_ylabel("Y")
-        self.ax.set
-        _zlabel("Z")
+        self.ax.set_zlabel("Z")
         self.ax.set_title("Airport")
 
     def create_lines(self):
@@ -38,8 +37,9 @@ class Space3D:
         self.ax.plot([6000, 8000], [6000, 6000], [0])
 
     def add_points(self):
-        self.db.get_points_to_visu()
-        # self.ax.scatter(int(x), int(y), int(z))
+        points = self.db.get_points_to_visu()
+        for x, y, z, nr_flight in points:
+            self.ax.scatter(int(x), int(y), int(z))
         # plt.show()
 
 
