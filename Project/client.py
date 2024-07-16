@@ -22,7 +22,7 @@ class Client:
         # self.pos_z = None
         # self.velocity = None
         # self.target_point = None
-        self.fuel = 60  # sec
+        self.fuel = random.randint(60, 130)  # sec
         self.start_life = datetime.datetime.now()
         self.json = {"command": "",
                      "number_flight": self.number_of_flight,
@@ -68,11 +68,17 @@ class Client:
                 print("CONTINUE: ", self.number_of_flight)
                 continue
             self.check_to_many_planes(self.json)
+            self.check_crash(self.json)
             self.specify_direction()
             print(self.json["number_flight"], "---", self.number_of_flight)
             if self.finish:
                 break
             time.sleep(1)
+
+    def check_crash(self, response):
+        if response["command"] == "crash":
+            print("crash")
+            pass
 
     def load_random_position(self):
         if self.flag_change_axis:
@@ -86,15 +92,16 @@ class Client:
         self.json["pos_z"] = random.randint(2000, 5000)
         self.json["velocity"] = random.randint(250, 300)
 
-    def check_fuel(
-            self):  # to bedzie jednak po stronie servera, a kkolizje miedzy samolotami zrobie na podtsawie bazy danych
-        if self.fuel < 0:
-            # self.finish = True
-            print("COLLISION")
-            # TO DO
+    # def check_fuel(
+    #         self):  # to bedzie jednak po stronie servera, a kkolizje miedzy samolotami zrobie na podtsawie bazy danych
+    #     if self.fuel < 0:
+    #         # self.finish = True
+    #         print("COLLISION")
+    #         # TO DO
 
     def check_to_many_planes(self, response):
         if response["command"] == "to_many_planes":
+            print("To many planes > 4")
             self.finish = True
 
     def specify_direction(self):

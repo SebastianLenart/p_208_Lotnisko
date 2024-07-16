@@ -40,7 +40,7 @@ class Server:
                           "fuel": "",
                           "tunnel": ""}
         while True:  # w kazdym watku klienta musi byc petla
-            if self.active_planes > 100:
+            if self.active_planes > 4:
                 self.cancel_plane(answer_to_send, connection)
                 break
             try:
@@ -56,6 +56,9 @@ class Server:
                 print("FINISHHHH")
                 break
             print("number_flight: ", answer_to_send["number_flight"])
+
+            self.check_crash(answer_to_send)
+
             self.save_data_to_track(follow_track, answer_to_send)
 
             self.add_or_change_data_plane(answer_to_send)
@@ -63,7 +66,6 @@ class Server:
             # szukaj kolizji:
             #
             # jak to zrobie to w zasadzie tyle, tylko statystyke dodac i testy i visualizacje
-
 
             try:
                 answer_to_send2 = json.dumps(answer_to_send).encode(encoding='utf8')
@@ -75,6 +77,12 @@ class Server:
         self.active_planes -= 1
 
         # delete db
+
+    def check_crash(self, answer_to_send):
+        if answer_to_send["fuel"] <= 0:
+            answer_to_send["command"] = "crash"
+            return True
+        return False
 
     def save_data_to_track(self, follow_track, answer_to_send):
         follow_track.load_data_plane(answer_to_send)
