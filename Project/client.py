@@ -78,7 +78,8 @@ class Client:
     def check_crash(self, response):
         if response["command"] == "crash":
             print("crash")
-            pass
+            self.finish = True
+            return
 
     def load_random_position(self):
         if self.flag_change_axis:
@@ -100,8 +101,9 @@ class Client:
     #         # TO DO
 
     def check_to_many_planes(self, response):
+        print("odp:", response["command"])
         if response["command"] == "to_many_planes":
-            print("To many planes > 4")
+            print("To many planes > 4 nr.", self.number_of_flight)
             self.finish = True
 
     def specify_direction(self):

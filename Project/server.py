@@ -40,14 +40,11 @@ class Server:
                           "fuel": "",
                           "tunnel": ""}
         while True:  # w kazdym watku klienta musi byc petla
-            if self.active_planes > 4:
-                self.cancel_plane(answer_to_send, connection)
-                break
             try:
                 data = connection.recv(1024)
                 if data:
                     answer_to_send = json.loads(data.decode(encoding="utf8"))
-                    print("data", data)
+                    # print("data", data)
                 else:
                     print("no data received")
             except json.decoder.JSONDecodeError:
@@ -67,19 +64,24 @@ class Server:
             #
             # jak to zrobie to w zasadzie tyle, tylko statystyke dodac i testy i visualizacje
 
+            if self.active_planes > 4:
+                answer_to_send["command"] = self.cancel_plane()
+            else:
+                answer_to_send["command"] = ""
+
             try:
                 answer_to_send2 = json.dumps(answer_to_send).encode(encoding='utf8')
                 connection.sendall(answer_to_send2)
             except BrokenPipeError:
                 print("Client removed", answer_to_send["number_flight"])
                 break
-
+            print(self.active_planes) # dziala
         self.active_planes -= 1
 
         # delete db
 
     def check_crash(self, answer_to_send):
-        if answer_to_send["fuel"] <= 0:
+        if answer_to_send["fuel"] <= 0: # add crash in air between 2 aircrafts
             answer_to_send["command"] = "crash"
             return True
         return False
@@ -107,10 +109,10 @@ class Server:
             thread_from_client_to_server = threading.Thread(target=self.read_write, args=(conn,))
             thread_from_client_to_server.start()
 
-    def cancel_plane(self, answer_to_send, connection):
-        answer_to_send["command"] = "to_many_planes"
-        answer_to_send2 = json.dumps(answer_to_send).encode(encoding='utf8')
-        connection.sendall(answer_to_send2)
+    def cancel_plane(self):
+        return "to_many_planes"
+        # answer_to_send2 = json.dumps(answer_to_send).encode(encoding='utf8')
+        # connection.sendall(answer_to_send2)
 
 
 if __name__ == '__main__':
