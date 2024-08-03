@@ -30,6 +30,11 @@ class Server:
 
     def read_write(self, connection):  # ta funkcja jest oddzielna dla kazdego samolotu, wykonuje sie wielowatkowo
         self.active_planes += 1
+        if self.active_planes > 4:
+            self.active_planes -= 1
+            data = connection.recv(1024)
+            print("Przekierwano Lot: ", json.loads(data.decode(encoding="utf8"))["number_flight"])
+            return
         follow_track = FollowTrack()
         answer_to_send = {"command": "",
                           "number_flight": "",
@@ -44,13 +49,13 @@ class Server:
                 data = connection.recv(1024)
                 if data:
                     answer_to_send = json.loads(data.decode(encoding="utf8"))
-                    # print("data", data)
                 else:
                     print("no data received")
             except json.decoder.JSONDecodeError:
                 print("Error")
-            if not answer_to_send or self.stopFlag or answer_to_send["command"] == "landing_finish":
-                print("FINISHHHH")
+            if (not answer_to_send or self.stopFlag or answer_to_send["command"] == "landing_finish"
+                    or answer_to_send["command"] == "test"):
+                print("FINISHHHH", answer_to_send["number_flight"])
                 break
             print("number_flight: ", answer_to_send["number_flight"])
 
@@ -64,10 +69,6 @@ class Server:
             #
             # jak to zrobie to w zasadzie tyle, tylko statystyke dodac i testy i visualizacje
 
-            if self.active_planes > 4:
-                answer_to_send["command"] = self.cancel_plane()
-            else:
-                answer_to_send["command"] = ""
 
             try:
                 answer_to_send2 = json.dumps(answer_to_send).encode(encoding='utf8')
@@ -76,6 +77,7 @@ class Server:
                 print("Client removed", answer_to_send["number_flight"])
                 break
             print(self.active_planes) # dziala
+
         self.active_planes -= 1
 
         # delete db

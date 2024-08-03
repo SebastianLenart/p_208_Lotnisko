@@ -61,7 +61,11 @@ class Client:
                 print("BROKEN PIPE")
                 self.finish = True
                 break
-            json_from_server = self.sock.recv(1024)
+            try:
+                json_from_server = self.sock.recv(1024)
+            except ConnectionResetError:
+                self.finish = True
+                break
             if json_from_server:
                 self.json = json.loads(json_from_server.decode(encoding="utf8"))
             else:
@@ -104,6 +108,7 @@ class Client:
         print("odp:", response["command"])
         if response["command"] == "to_many_planes":
             print("To many planes > 4 nr.", self.number_of_flight)
+            # self.json["command"] = "landing_finish"
             self.finish = True
 
     def specify_direction(self):
