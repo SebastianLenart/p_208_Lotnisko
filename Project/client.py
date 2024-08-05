@@ -17,11 +17,6 @@ class Client:
         self.sock.connect_ex((self.HOST, self.PORT))
         self.finish = False
         self.number_of_flight = number_of_flight
-        # self.pos_x = None
-        # self.pos_y = None
-        # self.pos_z = None
-        # self.velocity = None
-        # self.target_point = None
         self.fuel = random.randint(60, 130)  # sec
         self.start_life = datetime.datetime.now()
         self.json = {"command": "",
@@ -96,13 +91,6 @@ class Client:
             self.flag_change_axis = True
         self.json["pos_z"] = random.randint(2000, 5000)
         self.json["velocity"] = random.randint(250, 300)
-
-    # def check_fuel(
-    #         self):  # to bedzie jednak po stronie servera, a kkolizje miedzy samolotami zrobie na podtsawie bazy danych
-    #     if self.fuel < 0:
-    #         # self.finish = True
-    #         print("COLLISION")
-    #         # TO DO
 
     def check_to_many_planes(self, response):
         print("odp:", response["command"])
