@@ -60,6 +60,7 @@ class Server:
             print("number_flight: ", answer_to_send["number_flight"])
 
             self.check_crash_fuel(answer_to_send)
+            self.crash_distance(answer_to_send)
             self.save_data_to_track(follow_track, answer_to_send)
             self.add_or_change_data_plane(answer_to_send)
             # x = self.db.get_points(answer_to_send["number_flight"])
@@ -84,9 +85,11 @@ class Server:
         if answer_to_send["fuel"] <= 0: # add crash in air between 2 aircrafts
             answer_to_send["command"] = "crash"
             print("Crash - empty fuel")
-
             return True
         return False
+
+    def crash_distance(self, answer_to_send):
+        pass
 
     def save_data_to_track(self, follow_track, answer_to_send):
         follow_track.load_data_plane(answer_to_send)
