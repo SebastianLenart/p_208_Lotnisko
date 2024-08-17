@@ -69,21 +69,20 @@ class Server:
             #
             # jak to zrobie to w zasadzie tyle, tylko statystyke dodac i testy i visualizacje
 
-
             try:
                 answer_to_send2 = json.dumps(answer_to_send).encode(encoding='utf8')
                 connection.sendall(answer_to_send2)
             except BrokenPipeError:
                 print("Client removed", answer_to_send["number_flight"])
                 break
-            print(self.active_planes) # dziala
+            print(self.active_planes)  # dziala
 
         self.active_planes -= 1
 
         # delete db
 
     def check_crash_fuel(self, answer_to_send):
-        if answer_to_send["fuel"] <= 0: # add crash in air between 2 aircrafts
+        if answer_to_send["fuel"] <= 0:  # add crash in air between 2 aircrafts
             answer_to_send["command"] = "crash"
             print("Crash - empty fuel")
             answer_to_send["crash"] = True
@@ -91,10 +90,16 @@ class Server:
         return False
 
     def crash_distance(self, answer_to_send):
-        print("Crash distance test")
+
         data = self.db.get_points_to_crash_distance()
-        # porownac kazdy z kazdym
-        # answer_to_send["crash"] = True
+        # print("lendata", len(data))
+        # for nr_flight, pos_x, pos_y, pos_z in data:
+        for i in range(len(data) - 1):
+            # print(data[i]," -- ", data[i+1])
+            if ((data[i][1] - data[i + 1][1]) < 20) and ((data[i][2] - data[i + 1][2]) < 20) and (data[i][3] > 100) and (data[i + 1][3] > 100):
+                print("--------------->>>>>", data[i], " -- ", data[i + 1])
+                answer_to_send["crash"] = True
+
 
     def save_data_to_track(self, follow_track, answer_to_send):
         follow_track.load_data_plane(answer_to_send)
