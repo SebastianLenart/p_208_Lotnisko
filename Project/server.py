@@ -43,7 +43,8 @@ class Server:
                           "pos_z": "",
                           "velocity": "",
                           "fuel": "",
-                          "tunnel": ""}
+                          "tunnel": "",
+                          "crash": False}
         while True:  # w kazdym watku klienta musi byc petla
             try:
                 data = connection.recv(1024)
@@ -85,11 +86,15 @@ class Server:
         if answer_to_send["fuel"] <= 0: # add crash in air between 2 aircrafts
             answer_to_send["command"] = "crash"
             print("Crash - empty fuel")
+            answer_to_send["crash"] = True
             return True
         return False
 
     def crash_distance(self, answer_to_send):
-        pass
+        print("Crash distance test")
+        data = self.db.get_points_to_crash_distance()
+        # porownac kazdy z kazdym
+        # answer_to_send["crash"] = True
 
     def save_data_to_track(self, follow_track, answer_to_send):
         follow_track.load_data_plane(answer_to_send)

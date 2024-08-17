@@ -9,11 +9,11 @@ import psycopg2
 from contextlib import contextmanager
 
 CREATE_TABLE = """create TABLE IF NOT exists plane (plane_id serial primary key, number_flight INT, pos_x INT, pos_y INT,
-pos_z INT, velocity INT, fuel INT, tunnel INT, finish BOOL);"""
-ADD_DATA_PLANE = """insert into plane (number_flight, pos_x, pos_y, pos_z, velocity, fuel, tunnel, finish) 
-values (%s, %s, %s, %s, %s, %s, %s, %s)"""
+pos_z INT, velocity INT, fuel INT, tunnel INT, finish BOOL, crash BOOL);"""
+ADD_DATA_PLANE = """insert into plane (number_flight, pos_x, pos_y, pos_z, velocity, fuel, tunnel, finish, crash) 
+values (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
 UPDATE_DATA_PLANE = """UPDATE plane set pos_x = %s, pos_y = %s, pos_z = %s, velocity = %s, 
-fuel = %s, tunnel = %s, finish = %s WHERE number_flight = %s"""
+fuel = %s, tunnel = %s, finish = %s, crash = %s WHERE number_flight = %s"""
 REMOVE_TABLE_PLANE = """DELETE FROM plane"""
 SELECT_POINTS_BY_NUMBER_FLIGHT = """select pos_x, pos_y, pos_z
 from plane
@@ -22,6 +22,11 @@ order by plane_id
 limit 1"""
 SELECT_POINTS = """select pos_x, pos_y, pos_z, number_flight from plane
 order by number_flight"""
+SELECT_POINTS_TO_CRASH = """select number_flight, pos_x, pos_y, pos_z 
+from plane
+where finish = false and crash = false and pos_z > 20
+ORDER BY pos_y, pos_x;"""
+
 
 
 class Database:
@@ -99,8 +104,7 @@ class Database:
             with conn.cursor() as cursor:
                 yield cursor
         self.release_connection(conn)
-
-    # -------------------------------------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------------------------
     def create_test_table(self):
         with self.get_cursor() as cursor:
             cursor.execute("""CREATE TABLE IF NOT EXISTS borrower
@@ -130,7 +134,7 @@ class Database:
             else:
                 finish = False
             cursor.execute(ADD_DATA_PLANE, (number_flight, pos_x, pos_y, pos_z, velocity,
-                                            fuel, tunnel, finish))
+                                            fuel, tunnel, finish, False))
 
     def update_data_plane(self, data):
         with self.get_cursor() as cursor:
@@ -151,7 +155,7 @@ class Database:
             else:
                 finish = False
             cursor.execute(UPDATE_DATA_PLANE, (pos_x, pos_y, pos_z, velocity,
-                                               fuel, tunnel, finish, number_flight))
+                                               fuel, tunnel, finish, data["crash"], number_flight, ))
 
     def remove_data_from_plane(self):
         with self.get_cursor() as cursor:
@@ -165,6 +169,11 @@ class Database:
     def get_points_to_visu(self):
         with self.get_cursor() as cursor:
             cursor.execute(SELECT_POINTS)
+            return cursor.fetchall()
+
+    def get_points_to_crash_distance(self):
+        with self.get_cursor() as cursor:
+            cursor.execute(SELECT_POINTS_TO_CRASH)
             return cursor.fetchall()
 
 

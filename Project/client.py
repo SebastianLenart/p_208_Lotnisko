@@ -26,7 +26,8 @@ class Client:
                      "pos_z": 0,
                      "velocity": 0,
                      "fuel": 0,
-                     "tunnel": ""}
+                     "tunnel": "",
+                     "crash": False}
         self.flag_change_axis = False
         self.load_random_position()
         self.step_to_target = - 1
@@ -72,7 +73,7 @@ class Client:
             print(self.json["number_flight"], "---", self.number_of_flight)
             if self.finish:
                 break
-            time.sleep(1)
+            time.sleep(3)
 
     def check_crash(self, response):
         if response["command"] == "crash":
@@ -92,9 +93,11 @@ class Client:
         self.json["pos_z"] = random.randint(2000, 5000)
         self.json["velocity"] = random.randint(250, 300)
 
+
     def check_to_many_planes(self, response):
         print("odp:", response["command"])
         if response["command"] == "to_many_planes":
+
             print("To many planes > 4 nr.", self.number_of_flight)
             # self.json["command"] = "landing_finish"
             self.finish = True
