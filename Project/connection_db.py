@@ -24,7 +24,7 @@ SELECT_POINTS = """select pos_x, pos_y, pos_z, number_flight from plane
 order by number_flight"""
 SELECT_POINTS_TO_CRASH = """select number_flight, pos_x, pos_y, pos_z 
 from plane
-where finish = false and crash = false and pos_z > 20
+where finish = false and crash = false and pos_z > 100
 ORDER BY pos_y, pos_x;"""
 
 
@@ -155,7 +155,7 @@ class Database:
             else:
                 finish = False
             cursor.execute(UPDATE_DATA_PLANE, (pos_x, pos_y, pos_z, velocity,
-                                               fuel, tunnel, finish, data["crash"], number_flight, ))
+                                               fuel, tunnel, finish, data["crash"], number_flight,))
 
     def remove_data_from_plane(self):
         with self.get_cursor() as cursor:

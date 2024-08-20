@@ -36,22 +36,26 @@ class Server:
             print("Przekierwano Lot: ", json.loads(data.decode(encoding="utf8"))["number_flight"])
             return
         follow_track = FollowTrack()
-        answer_to_send = {"command": "",
-                          "number_flight": "",
-                          "pos_x": "",
-                          "pos_y": "",
-                          "pos_z": "",
-                          "velocity": "",
-                          "fuel": "",
-                          "tunnel": "",
-                          "crash": False}
+
         while True:  # w kazdym watku klienta musi byc petla
+
+            answer_to_send = {"command": "",
+                              "number_flight": "",
+                              "pos_x": "",
+                              "pos_y": "",
+                              "pos_z": "",
+                              "velocity": "",
+                              "fuel": -1,
+                              "tunnel": "",
+                              "crash": False}
+
             try:
                 data = connection.recv(1024)
                 if data:
                     answer_to_send = json.loads(data.decode(encoding="utf8"))
                 else:
                     print("no data received")
+                    break
             except json.decoder.JSONDecodeError:
                 print("Error")
             if (not answer_to_send or self.stopFlag or answer_to_send["command"] == "landing_finish"
@@ -64,10 +68,6 @@ class Server:
             self.crash_distance(answer_to_send)
             self.save_data_to_track(follow_track, answer_to_send)
             self.add_or_change_data_plane(answer_to_send)
-            # x = self.db.get_points(answer_to_send["number_flight"])
-            # szukaj kolizji:
-            #
-            # jak to zrobie to w zasadzie tyle, tylko statystyke dodac i testy i visualizacje
 
             try:
                 answer_to_send2 = json.dumps(answer_to_send).encode(encoding='utf8')
@@ -92,13 +92,17 @@ class Server:
     def crash_distance(self, answer_to_send):
 
         data = self.db.get_points_to_crash_distance()
+        print("SSS", data)
         # print("lendata", len(data))
         # for nr_flight, pos_x, pos_y, pos_z in data:
         for i in range(len(data) - 1):
             # print(data[i]," -- ", data[i+1])
-            if ((data[i][1] - data[i + 1][1]) < 20) and ((data[i][2] - data[i + 1][2]) < 20) and (data[i][3] > 100) and (data[i + 1][3] > 100):
+            if (abs(data[i][1] - data[i + 1][1]) < 50) and (abs(data[i][2] - data[i + 1][2]) < 50):
+                print("DATA: ", data[i][1], " - ", data[i + 1][1])
+                print("DATA: ", data[i][2], " - ", data[i + 1][2])
                 print("--------------->>>>>", data[i], " -- ", data[i + 1])
                 answer_to_send["crash"] = True
+                answer_to_send["command"] = "crash"
 
 
     def save_data_to_track(self, follow_track, answer_to_send):

@@ -11,6 +11,7 @@ import math
 class Client:
     HOST = "127.0.0.1"
     PORT = 65432
+    flag_change_axis = False
 
     def __init__(self, number_of_flight):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -28,7 +29,7 @@ class Client:
                      "fuel": 0,
                      "tunnel": "",
                      "crash": False}
-        self.flag_change_axis = False
+        # self.flag_change_axis = False
         self.load_random_position()
         self.step_to_target = - 1
         self.step_move_x = 0
@@ -73,7 +74,7 @@ class Client:
             print(self.json["number_flight"], "---", self.number_of_flight)
             if self.finish:
                 break
-            time.sleep(3)
+            time.sleep(2)
 
     def check_crash(self, response):
         if response["command"] == "crash":
@@ -82,22 +83,20 @@ class Client:
             return
 
     def load_random_position(self):
-        if self.flag_change_axis:
+        if Client.flag_change_axis:
             self.json["pos_x"] = random.choice([0, 10000])
             self.json["pos_y"] = random.randint(0, 10000)
-            self.flag_change_axis = False
+            Client.flag_change_axis = False
         else:
             self.json["pos_y"] = random.choice([0, 10000])
             self.json["pos_x"] = random.randint(0, 10000)
-            self.flag_change_axis = True
+            Client.flag_change_axis= True
         self.json["pos_z"] = random.randint(2000, 5000)
         self.json["velocity"] = random.randint(250, 300)
-
 
     def check_to_many_planes(self, response):
         print("odp:", response["command"])
         if response["command"] == "to_many_planes":
-
             print("To many planes > 4 nr.", self.number_of_flight)
             # self.json["command"] = "landing_finish"
             self.finish = True
