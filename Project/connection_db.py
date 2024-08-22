@@ -24,7 +24,7 @@ SELECT_POINTS = """select pos_x, pos_y, pos_z, number_flight from plane
 order by number_flight"""
 SELECT_POINTS_TO_CRASH = """select number_flight, pos_x, pos_y, pos_z 
 from plane
-where finish = false and crash = false and pos_z > 100
+where finish = false and pos_z > 100
 ORDER BY pos_y, pos_x;"""
 
 

@@ -120,10 +120,10 @@ class Client:
             self.landing_finish = True
             self.json["pos_x"], self.json["pos_y"], self.json["pos_z"], self.json["velocity"] = self.json["tunnel"][-1]
             return
-        delta_x = abs(self.json["pos_x"] - self.target_x)
-        delta_y = abs(self.json["pos_y"] - self.target_y)
-        delta_z = abs(self.json["pos_z"] - self.target_z)
-        delta_v = abs(self.json["velocity"] - self.target_v)
+        delta_x = abs(self.json["pos_x"] - int(self.target_x))
+        delta_y = abs(self.json["pos_y"] - int(self.target_y))
+        delta_z = abs(self.json["pos_z"] - int(self.target_z))
+        delta_v = abs(self.json["velocity"] - int(self.target_v))
         distance = math.sqrt(delta_x * delta_x + delta_y * delta_y)
         self.step_to_target = self.compute_time_to_achive_point(distance)
         self.specify_step_xyz(delta_x, delta_y, delta_z, delta_v)

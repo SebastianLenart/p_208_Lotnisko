@@ -48,7 +48,6 @@ class Server:
                               "fuel": -1,
                               "tunnel": "",
                               "crash": False}
-
             try:
                 data = connection.recv(1024)
                 if data:
@@ -96,7 +95,6 @@ class Server:
         # print("lendata", len(data))
         # for nr_flight, pos_x, pos_y, pos_z in data:
         for i in range(len(data) - 1):
-            # print(data[i]," -- ", data[i+1])
             if (abs(data[i][1] - data[i + 1][1]) < 50) and (abs(data[i][2] - data[i + 1][2]) < 50):
                 print("DATA: ", data[i][1], " - ", data[i + 1][1])
                 print("DATA: ", data[i][2], " - ", data[i + 1][2])
