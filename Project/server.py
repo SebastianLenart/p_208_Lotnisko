@@ -62,12 +62,11 @@ class Server:
                 print("FINISHHHH", answer_to_send["number_flight"])
                 break
             print("number_flight: ", answer_to_send["number_flight"])
-
-            self.check_crash_fuel(answer_to_send)
-            self.crash_distance(answer_to_send)
+            if self.crash_plane(answer_to_send):
+                answer_to_send["command"] = "crash"
+                answer_to_send["crash"] = True
             self.save_data_to_track(follow_track, answer_to_send)
             self.add_or_change_data_plane(answer_to_send)
-
             try:
                 answer_to_send2 = json.dumps(answer_to_send).encode(encoding='utf8')
                 connection.sendall(answer_to_send2)
@@ -80,28 +79,21 @@ class Server:
 
         # delete db
 
-    def check_crash_fuel(self, answer_to_send):
-        if answer_to_send["fuel"] <= 0:  # add crash in air between 2 aircrafts
-            answer_to_send["command"] = "crash"
-            print("Crash - empty fuel")
-            answer_to_send["crash"] = True
-            return True
-        return False
-
-    def crash_distance(self, answer_to_send):
-
+    def crash_plane(self, answer_to_send):
+        flag = False
+        if answer_to_send["fuel"] <= 0:
+            self.db.update_crash_plane(answer_to_send["number_flight"])
+            flag = True
         data = self.db.get_points_to_crash_distance()
-        print("SSS", data)
-        # print("lendata", len(data))
-        # for nr_flight, pos_x, pos_y, pos_z in data:
         for i in range(len(data) - 1):
-            if (abs(data[i][1] - data[i + 1][1]) < 50) and (abs(data[i][2] - data[i + 1][2]) < 50):
-                print("DATA: ", data[i][1], " - ", data[i + 1][1])
-                print("DATA: ", data[i][2], " - ", data[i + 1][2])
+            if (abs(data[i][1] - data[i + 1][1]) < 100) and (abs(data[i][2] - data[i + 1][2]) < 100):
                 print("--------------->>>>>", data[i], " -- ", data[i + 1])
-                answer_to_send["crash"] = True
-                answer_to_send["command"] = "crash"
-
+                print("CRASH: ", "nr:", data[i][0], "and", data[i + 1][0], " x:", data[i][1], data[i + 1][1], " y:",
+                      data[i][2], data[i + 1][2])
+                self.db.update_crash_plane(data[i][0])
+                self.db.update_crash_plane(data[i + 1][0])
+                flag = True
+        return flag
 
     def save_data_to_track(self, follow_track, answer_to_send):
         follow_track.load_data_plane(answer_to_send)

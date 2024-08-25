@@ -14,6 +14,7 @@ ADD_DATA_PLANE = """insert into plane (number_flight, pos_x, pos_y, pos_z, veloc
 values (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
 UPDATE_DATA_PLANE = """UPDATE plane set pos_x = %s, pos_y = %s, pos_z = %s, velocity = %s, 
 fuel = %s, tunnel = %s, finish = %s, crash = %s WHERE number_flight = %s"""
+UPDATE_CRASH = """UPDATE plane set crash = true WHERE number_flight = %s;"""
 REMOVE_TABLE_PLANE = """DELETE FROM plane"""
 SELECT_POINTS_BY_NUMBER_FLIGHT = """select pos_x, pos_y, pos_z
 from plane
@@ -24,7 +25,7 @@ SELECT_POINTS = """select pos_x, pos_y, pos_z, number_flight from plane
 order by number_flight"""
 SELECT_POINTS_TO_CRASH = """select number_flight, pos_x, pos_y, pos_z 
 from plane
-where finish = false and pos_z > 100
+where finish = false and crash = false and pos_z > 100
 ORDER BY pos_y, pos_x;"""
 
 
@@ -156,6 +157,9 @@ class Database:
                 finish = False
             cursor.execute(UPDATE_DATA_PLANE, (pos_x, pos_y, pos_z, velocity,
                                                fuel, tunnel, finish, data["crash"], number_flight,))
+    def update_crash_plane(self, number_flight):
+        with self.get_cursor() as cursor:
+            cursor.execute(UPDATE_CRASH, (number_flight,))
 
     def remove_data_from_plane(self):
         with self.get_cursor() as cursor:
