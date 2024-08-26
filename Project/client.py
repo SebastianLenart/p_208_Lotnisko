@@ -29,7 +29,6 @@ class Client:
                      "fuel": 0,
                      "tunnel": "",
                      "crash": False}
-        # self.flag_change_axis = False
         self.load_random_position()
         self.step_to_target = - 1
         self.step_move_x = 0
@@ -71,13 +70,13 @@ class Client:
             self.check_to_many_planes(self.json)
             self.check_crash(self.json)
             self.specify_direction()
-            print(self.json["number_flight"], "---", self.number_of_flight)
+            print("number_flight:", self.json["number_flight"])
             if self.finish:
                 break
             time.sleep(2)
 
     def check_crash(self, response):
-        if response["command"] == "crash":
+        if response["crash"]:
             print("crash")
             self.finish = True
             return
@@ -90,15 +89,13 @@ class Client:
         else:
             self.json["pos_y"] = random.choice([0, 10000])
             self.json["pos_x"] = random.randint(0, 10000)
-            Client.flag_change_axis= True
+            Client.flag_change_axis = True
         self.json["pos_z"] = random.randint(2000, 5000)
         self.json["velocity"] = random.randint(250, 300)
 
     def check_to_many_planes(self, response):
-        print("odp:", response["command"])
         if response["command"] == "to_many_planes":
             print("To many planes > 4 nr.", self.number_of_flight)
-            # self.json["command"] = "landing_finish"
             self.finish = True
 
     def specify_direction(self):
@@ -137,7 +134,6 @@ class Client:
         self.step_move_y = y / self.step_to_target
         self.step_move_z = z / self.step_to_target
         self.step_move_v = v / self.step_to_target
-        # print("step: ", self.step_move_x)
 
     def move_position(self):
         if self.json["pos_x"] > self.target_x:

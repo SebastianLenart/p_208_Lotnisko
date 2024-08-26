@@ -27,6 +27,7 @@ SELECT_POINTS_TO_CRASH = """select number_flight, pos_x, pos_y, pos_z
 from plane
 where finish = false and crash = false and pos_z > 100
 ORDER BY pos_y, pos_x;"""
+SELECT_CRASH_STATE = """select crash from plane WHERE number_flight = %s;"""
 
 
 
@@ -151,15 +152,25 @@ class Database:
                 tunnel = 1
             else:
                 tunnel = 2
-            if data["command"] == "landing_finish":
+
+            cursor.execute(SELECT_CRASH_STATE, (number_flight, ))
+            crash_state = cursor.fetchall()[0][0]
+
+            if pos_z == 0 and not crash_state:
                 finish = True
             else:
                 finish = False
+            data["crash"] = self.select_crash_state(data)
             cursor.execute(UPDATE_DATA_PLANE, (pos_x, pos_y, pos_z, velocity,
                                                fuel, tunnel, finish, data["crash"], number_flight,))
     def update_crash_plane(self, number_flight):
         with self.get_cursor() as cursor:
             cursor.execute(UPDATE_CRASH, (number_flight,))
+
+    def select_crash_state(self, data):
+        with self.get_cursor() as cursor:
+            cursor.execute(SELECT_CRASH_STATE, (data["number_flight"],))
+            return cursor.fetchall()[0][0]
 
     def remove_data_from_plane(self):
         with self.get_cursor() as cursor:
@@ -189,11 +200,3 @@ if __name__ == '__main__':
         print("0")
     print(db.get_points(3))
 
-
-    # threads = []
-    # for _ in range(5):
-    #     t = Thread(target=db.create_table)
-    #     threads.append(t)
-    #     t.start()
-    # for t in threads:
-    #     t.join()

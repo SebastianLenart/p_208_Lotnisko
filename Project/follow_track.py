@@ -17,9 +17,6 @@ class FollowTrack:
     def load_data_plane(self, dict):
         self.data_plane = dict
 
-    def return_answer(self):
-        pass  # zwracaj slownik
-
     def choose_tunnel(self):
         a1 = abs(self.data_plane["pos_x"] - self.first_tunnel[0][0])
         a2 = abs(self.data_plane["pos_x"] - self.second_tunnel[0][0])
