@@ -18,7 +18,7 @@ class Client:
         self.sock.connect_ex((self.HOST, self.PORT))
         self.finish = False
         self.number_of_flight = number_of_flight
-        self.fuel = random.randint(60, 130)  # sec
+        self.fuel = random.randint(90, 150)  # sec
         self.start_life = datetime.datetime.now()
         self.json = {"command": "",
                      "number_flight": self.number_of_flight,

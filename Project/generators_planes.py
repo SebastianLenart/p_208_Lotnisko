@@ -16,7 +16,7 @@ class GeneratorPlanes:
             t = Thread(target=self.add_Client, args=(self.number_of_flight,))
             t.start()
             self.number_of_flight += 1
-            time.sleep(2)
+            time.sleep(8)
 
     def add_Client(self, number_flight):
         plane = Client(number_flight)
