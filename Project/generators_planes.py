@@ -18,7 +18,10 @@ class GeneratorPlanes:
     def generators(self):
         while True:
             print("DEAMON")
-            time.sleep(2)
+            t = Thread(target=self.add_Client, args=(self.number_of_flight,))
+            t.start()
+            self.number_of_flight += 1
+            time.sleep(20)
 
     def add_manual_planes(self):
         add_planes = -1
@@ -40,8 +43,4 @@ class GeneratorPlanes:
 
 if __name__ == '__main__':
     generator = GeneratorPlanes()
-    # generator.add_manual_planes()
-
-# TODO
-# dorobic deamona automatycznie dodawanie klientow
-# testy
+   
