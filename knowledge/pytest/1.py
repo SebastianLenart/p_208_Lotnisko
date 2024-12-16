@@ -1,8 +1,12 @@
-import datetime
+import requests
+import unittest
+from unittest.mock import Mock
 
-def get_age(yyyy:int, mm:int, dd:int) -> int:
-    dob = datetime.date(yyyy, mm, dd)
-    today = datetime.date.today()
-    age = round((today - dob).days / 365.25)
-    return age
+
+
+my_mock = Mock()
+my_mock.some_method.return_value = 42
+my_mock.some_attribute = "Hello, world!"
+my_mock.some_method.side_effect = ValueError("Something went wrong")
+
 
